@@ -1,0 +1,37 @@
+import pandas as pd
+
+dunv16=pd.read_csv(r"C:\Users\magal\university_ranking\2016\UniversityRanking_2016.csv")
+dunv16['Year']=2016
+dunv16
+
+dunv17=pd.read_csv(r"C:\Users\magal\university_ranking\2017\UniversityRanking_2017.csv")
+dunv17['Year']=2017
+dunv17
+
+dunv18=pd.read_csv(r"C:\Users\magal\university_ranking\2018\UniversityRanking_2018.csv")
+dunv18['Year']=2018
+dunv18
+
+dunv19=pd.read_csv(r"C:\Users\magal\university_ranking\2019\UniversityRanking_2019.csv")
+dunv19['Year']=2019
+dunv19
+
+dunv20=pd.read_csv(r"C:\Users\magal\university_ranking\2020\UniversityRanking_2020.csv")
+dunv20['Year']=2020
+dunv20
+
+dunv21=pd.read_csv(r"C:\Users\magal\university_ranking\2021\UniversityRanking_2021.csv")
+dunv21['Year']=2021
+dunv21
+
+dunv=pd.concat([dunv16,dunv17,dunv18,dunv19,dunv20,dunv21])
+
+dunv['Institute Name']=dunv['Institute Name'].str.title()
+
+dunv.to_csv("UniversityRanking_16_17_18_19_20_21.csv",index=False)
+
+df=dunv.fillna(value=0)
+df=dunv.replace(to_replace='-',value=0)
+df=dunv.replace(to_replace=' ',value=0)
+
+df

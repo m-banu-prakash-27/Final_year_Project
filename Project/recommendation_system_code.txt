@@ -1,0 +1,319 @@
+import numpy as np
+import pandas as pd
+
+from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
+
+data=pd.read_csv(r'C:\Users\magal\university_ranking\UniversityRanking_16_17_18_19_20_21.csv')
+df=pd.read_csv(r'C:\Users\magal\university_ranking\UniversityRanking_16_17_18_19_20_21.csv')
+print(df)
+
+df.describe()
+
+def zscores(df):
+    data=df
+    df1=df
+    cols=list(df1.columns)
+    cols.remove('Institute Id')
+    cols.remove('Institute Name')
+    cols.remove('City')
+    cols.remove('State')
+    cols.remove('Rank')
+    cols.remove('Year')
+    for col in cols:
+        col_zscore=col+'_ZScore'
+        df1[col_zscore] = (df1[col] - df1[col].mean())/df1[col].std(ddof=0)
+    df2=df1
+    df2.drop('Institute Id',inplace=True,axis=1)
+    df2.drop('Institute Name',inplace=True,axis=1)
+    df2.drop('City',inplace=True,axis=1)
+    df2.drop('State',inplace=True,axis=1)
+    df2.drop('Rank',inplace=True,axis=1)
+    mvcols=df2.max()
+    print(mvcols)
+    max_zscore=df1['Score_ZScore'].max()
+    max_ztlr=df1['TLR_ZScore'].max()
+    max_zrpc=df1['RPC_ZScore'].max()
+    max_zgo=df1['GO_ZScore'].max()
+    max_zoi=df1['OI_ZScore'].max()
+    max_zPrcp=df1['Perception_ZScore'].max()
+    print('Maximum Z Scores: ',max_zscore,max_ztlr,max_zrpc,max_zgo,max_zoi,max_zPrcp)
+    th_zscore=max_zscore*0.30
+    th_ztlr=max_ztlr*0.30
+    th_zrpc=max_zrpc*0.30
+    th_zgo=max_zgo*0.30
+    th_zoi=max_zoi*0.30
+    th_zPrcp=max_zPrcp*0.30
+    lst=[]
+    lst=[th_zscore,th_ztlr,th_zrpc,th_zgo,th_zoi,th_zPrcp]
+    df2.drop('Score',inplace=True,axis=1)
+    df2.drop('TLR',inplace=True,axis=1)
+    df2.drop('RPC',inplace=True,axis=1)
+    df2.drop('GO',inplace=True,axis=1)
+    df2.drop('OI',inplace=True,axis=1)
+    df2.drop('Perception',inplace=True,axis=1)
+    df3=df2
+    df3['Score Parameter']=df3['Score_ZScore'].ge(th_zscore)
+    df3['TLR Parameter']=df3['TLR_ZScore'].ge(th_ztlr)
+    df3['RPC Parameter']=df3['RPC_ZScore'].ge(th_zrpc)
+    df3['GO Parameter']=df3['GO_ZScore'].ge(th_zgo)
+    df3['OI Parameter']=df3['OI_ZScore'].ge(th_zoi)
+    df3['Perception Parameter']=df3['Perception_ZScore'].ge(th_zPrcp)
+    df3=df3*1
+    data['Score Parameter']=df3['Score_ZScore'].ge(th_zscore)
+    data['TLR Parameter']=df3['TLR_ZScore'].ge(th_ztlr)
+    data['RPC Parameter']=df3['RPC_ZScore'].ge(th_zrpc)
+    data['GO Parameter']=df3['GO_ZScore'].ge(th_zgo)
+    data['OI Parameter']=df3['OI_ZScore'].ge(th_zoi)
+    data['Perception Parameter']=df3['Perception_ZScore'].ge(th_zPrcp)
+    data=data*1
+
+ 
+    return data,lst
+ 
+
+
+def nzscores(df,thzscore,thztlr,thzrpc,thzgo,thzoi,thzPrcp):
+    data=df
+    df1=df
+    cols=list(df1.columns)
+    cols.remove('Institute Id')
+    cols.remove('Institute Name')
+    cols.remove('City')
+    cols.remove('State')
+    cols.remove('Rank')
+    cols.remove('Year')
+    for col in cols:
+        col_zscore=col+'_ZScore'
+        df1[col_zscore] = (df1[col] - df1[col].mean())/df1[col].std(ddof=0)
+    df2=df1
+    df2.drop('Institute Id',inplace=True,axis=1)
+    df2.drop('Institute Name',inplace=True,axis=1)
+    df2.drop('City',inplace=True,axis=1)
+    df2.drop('State',inplace=True,axis=1)
+    df2.drop('Rank',inplace=True,axis=1)
+    th_zscore=thzscore
+    th_ztlr=thztlr
+    th_zrpc=thzrpc
+    th_zgo=thzgo
+    th_zoi=thzoi
+    th_zPrcp=thzPrcp
+    th_zscore,th_ztlr,th_zrpc,th_zgo,th_zoi,th_zPrcp
+    df2.drop('Score',inplace=True,axis=1)
+    df2.drop('TLR',inplace=True,axis=1)
+    df2.drop('RPC',inplace=True,axis=1)
+    df2.drop('GO',inplace=True,axis=1)
+    df2.drop('OI',inplace=True,axis=1)
+    df2.drop('Perception',inplace=True,axis=1)
+    df3=df2
+    df3['Score Parameter']=df3['Score_ZScore'].ge(th_zscore)
+    df3['TLR Parameter']=df3['TLR_ZScore'].ge(th_ztlr)
+    df3['RPC Parameter']=df3['RPC_ZScore'].ge(th_zrpc)
+    df3['GO Parameter']=df3['GO_ZScore'].ge(th_zgo)
+    df3['OI Parameter']=df3['OI_ZScore'].ge(th_zoi)
+    df3['Perception Parameter']=df3['Perception_ZScore'].ge(th_zPrcp)
+    df3=df3*1
+    data['Score Parameter']=df3['Score_ZScore'].ge(th_zscore)
+    data['TLR Parameter']=df3['TLR_ZScore'].ge(th_ztlr)
+    data['RPC Parameter']=df3['RPC_ZScore'].ge(th_zrpc)
+    data['GO Parameter']=df3['GO_ZScore'].ge(th_zgo)
+    data['OI Parameter']=df3['OI_ZScore'].ge(th_zoi)
+    data['Perception Parameter']=df3['Perception_ZScore'].ge(th_zPrcp)
+    data=data*1
+
+ 
+    return data
+ 
+
+
+fet16=df['Year']==2016
+rc16=df[fet16]
+print(rc16)
+df16,ls16=zscores(rc16)
+print(df16)
+
+fet17=df['Year']==2017
+rc17=df[fet17]
+print(rc17)
+df17,ls17=zscores(rc17)
+print(df17)
+
+fet18=df['Year']==2018
+rc18=df[fet18]
+print(rc18)
+df18,ls18=zscores(rc18)
+print(df18)
+
+fet19=df['Year']==2019
+rc19=df[fet19]
+print(rc19)
+df19,ls19=zscores(rc19)
+print(df19)
+
+fet20=df['Year']==2020
+rc20=df[fet20]
+print(rc20)
+df20,ls20=zscores(rc20)
+print(df20)
+
+fet21=df['Year']==2021
+rc21=df[fet21]
+print(rc21)
+df21,ls21=zscores(rc21)
+print(df21)
+
+t_zscore=ls21[0]
+t_ztlr=ls21[1]
+t_zrpc=ls21[2]
+t_zgo=ls21[3]
+t_zoi=ls21[4]
+t_zPrcp=ls21[5]
+print(t_zscore,t_ztlr,t_zrpc,t_zgo,t_zoi,t_zPrcp)
+
+df16
+
+df17
+
+df18
+
+df19
+
+df20
+
+df21
+
+dff=pd.concat([df16,df17,df18,df19,df20,df21])
+dff
+
+data
+
+data['Score Parameter']=dff['Score Parameter']
+data['TLR Parameter']=dff['TLR Parameter']
+data['RPC Parameter']=dff['RPC Parameter']
+data['GO Parameter']=dff['GO Parameter']
+data['OI Parameter']=dff['OI Parameter']
+data['Perception Parameter']=dff['Perception Parameter']
+
+data
+
+ndf=pd.read_csv(r'C:\Users\magal\university_ranking\new_data.csv')
+ndff=pd.read_csv(r'C:\Users\magal\university_ranking\new_data.csv')
+df22=nzscores(ndff,t_zscore,t_ztlr,t_zrpc,t_zgo,t_zoi,t_zPrcp)
+print(df22)
+
+ndf['Score Parameter']=ndff['Score Parameter']
+ndf['TLR Parameter']=ndff['TLR Parameter']
+ndf['RPC Parameter']=ndff['RPC Parameter']
+ndf['GO Parameter']=ndff['GO Parameter']
+ndf['OI Parameter']=ndff['OI Parameter']
+ndf['Perception Parameter']=ndff['Perception Parameter']
+
+ndf
+
+#data.to_csv("UniversityRanking_upd.csv",index=False)
+
+yr=int(input('Enter the year:'))
+
+if yr>2021 :
+    ndata=ndf
+    colname=input("Enter any one Column Name[Institute Id,Institute Name,City,State]:")
+    fetch1=data['Year']==2021
+else:
+    ndata=data
+    colname=input("Enter any one Column Name[Institute Id,Institute Name,City,State,Rank]:")
+    fetch1=data['Year']==yr
+
+colname=colname.title()
+colvalue=input("Enter corresponding Column Value[Institute Id,Institute Name,City,State,Rank]:")
+if colname=='Rank':
+    colvalue=int(colvalue)
+elif colname=='Institute Id':
+    colvalue=colvalue.upper()
+else:
+    colvalue=colvalue.title()
+fetch=ndata[colname]==colvalue
+
+rec=ndata[fetch]
+record=ndata[fetch]
+recrd=ndata[fetch]
+rcrd=data[fetch1]
+
+record
+
+rec1=rec
+rec1.drop('Institute Id',inplace=True,axis=1)
+rec1.drop('Institute Name',inplace=True,axis=1)
+rec1.drop('City',inplace=True,axis=1)
+rec1.drop('State',inplace=True,axis=1)
+rec1.drop('Rank',inplace=True,axis=1)
+rec1.drop('Score',inplace=True,axis=1)
+rec1.drop('TLR',inplace=True,axis=1)
+rec1.drop('RPC',inplace=True,axis=1)
+rec1.drop('GO',inplace=True,axis=1)
+rec1.drop('OI',inplace=True,axis=1)
+rec1.drop('Perception',inplace=True,axis=1)
+rec
+
+fet=rec['Year']==yr
+rc=rec[fet]
+rc
+
+if len(rc)!=0:
+    dict=rc.to_dict(orient='records')
+    print(dict)
+else:
+    print('Data Not Available')
+
+c=0
+if len(rc)!=0:   
+    for i in dict:
+        print("The college/university needs improvement in: ")
+        for j in i:    
+            if i[j]==0:
+                print(j)
+                c+=1
+        if c==0:print('Nothing')
+else:
+    print('Data Not Available')
+
+feth=recrd['Year']==yr
+rc=recrd[feth]
+rc
+
+feth1=rcrd['Rank']==1
+rc1=rcrd[feth1]
+rc1
+
+lst1=[]
+lst2=[]
+if len(rc)!=0:
+    for i,r in rc.iterrows():
+        lst2=[r.Score,r.TLR,r.RPC,r.GO,r.OI,r.Perception]
+else:
+    print('Data Not Available')
+for i,r in rc1.iterrows():
+    lst1=[r.Score,r.TLR,r.RPC,r.GO,r.OI,r.Perception]
+
+import matplotlib.pyplot as plt
+
+if (len(lst1) and len(lst2))!=0:
+    w=0.4
+    met=['Score','TLR','RPC','GO','OI','Perception']
+    print('Top University:',lst1)
+    print('Selected University:',lst2)
+
+    bar1=np.arange(len(met))
+    bar2=[i+w for i in bar1]
+
+    plt.bar(bar1,lst1,w,label='Top University')
+    plt.bar(bar2,lst2,w,label='Selected University')
+
+    plt.xlabel("Parameters")
+    plt.ylabel("Scores")
+    plt.title("Top University Vs Selected University")
+    plt.xticks(bar1+w/2,met)
+    plt.legend()
+    plt.show()
+else:
+    print('Graph is not possible as data is Not Available')
